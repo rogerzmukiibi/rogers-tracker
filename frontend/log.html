@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Log — Rogers Tracker</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <nav>
+    <a class="nav-brand" href="/">RT</a>
+    <div class="nav-links">
+      <a href="/">Dashboard</a>
+      <a href="/entry">Add</a>
+      <a href="/log">Log</a>
+      <a href="/summary">Summary</a>
+      <a href="/settings">Settings</a>
+    </div>
+  </nav>
+
+  <main class="page">
+    <div class="page-header">
+      <span class="page-title">Transaction Log</span>
+      <div id="month-selector"></div>
+    </div>
+
+    <div class="filters">
+      <input type="search" id="filter-search"
+        placeholder="Search description…"
+        style="min-width:160px;flex:1;max-width:260px">
+      <select id="filter-type">
+        <option value="">All Types</option>
+        <option value="expense">Expenses</option>
+        <option value="income">Income</option>
+        <option value="transfer">Transfers</option>
+      </select>
+      <select id="filter-account">
+        <option value="">All Accounts</option>
+      </select>
+      <select id="filter-category">
+        <option value="">All Categories</option>
+      </select>
+    </div>
+
+    <div id="log-totals" style="margin-bottom:0.75rem"></div>
+    <div id="log-table"></div>
+  </main>
+
+  <!-- Edit modal -->
+  <div class="modal-overlay" id="edit-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modal-title">Edit Transaction</h3>
+        <button class="modal-close" id="modal-close">✕</button>
+      </div>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+  <script type="module" src="/static/log.js"></script>
+</body>
+</html>

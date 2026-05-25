@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings — Rogers Tracker</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <style>
+    .settings-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      align-items: start;
+    }
+    .settings-grid .full-width { grid-column: 1 / -1; }
+    .ref-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .ref-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.85rem 1.1rem;
+      background: var(--surface-2);
+      border-bottom: 1px solid var(--border);
+    }
+    .ref-card-header h2 {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+    }
+    .ref-list { list-style: none; }
+    .ref-list li {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1.1rem;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.84rem;
+    }
+    .ref-list li:last-child { border-bottom: none; }
+    .ref-list li .item-name { flex: 1; }
+    .ref-list li .item-meta {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--text-light);
+      min-width: 60px;
+    }
+    .ref-list li.editing { background: var(--surface-2); flex-wrap: wrap; gap: 0.4rem; }
+    .ref-list li input[type="text"],
+    .ref-list li input[type="number"],
+    .ref-list li select {
+      min-height: 32px;
+      font-size: 0.82rem;
+      padding: 0.25rem 0.5rem;
+      width: auto;
+    }
+    .ref-list li input[type="text"]   { flex: 1; min-width: 100px; }
+    .ref-list li input[type="number"] { width: 64px; }
+    .ref-list li select               { min-width: 100px; }
+    .item-actions { display: flex; gap: 0.25rem; }
+    .protected-badge {
+      font-family: var(--font-mono);
+      font-size: 0.58rem;
+      padding: 0.1rem 0.35rem;
+      border-radius: 3px;
+      background: var(--amber-bg);
+      color: var(--amber);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .add-row {
+      display: flex;
+      gap: 0.5rem;
+      padding: 0.65rem 1.1rem;
+      border-top: 1px solid var(--border);
+      background: var(--surface-2);
+      flex-wrap: wrap;
+      align-items: flex-end;
+    }
+    .add-row input, .add-row select {
+      min-height: 36px;
+      font-size: 0.82rem;
+      padding: 0.3rem 0.5rem;
+      width: auto;
+    }
+    .add-row input[type="text"]   { flex: 1; min-width: 120px; }
+    .add-row input[type="number"] { width: 70px; }
+    .add-row select               { min-width: 100px; }
+    .type-badge {
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+      text-transform: uppercase;
+    }
+    .type-liquid    { background: var(--blue-bg);   color: var(--blue);   }
+    .type-financial { background: var(--purple-bg); color: var(--purple); }
+    .type-credit    { background: var(--red-bg);    color: var(--red);    }
+    @media (max-width: 640px) {
+      .settings-grid { grid-template-columns: 1fr; }
+      .settings-grid .full-width { grid-column: 1; }
+    }
+
+    /* ── Monthly setup section ─────────────────────────────────── */
+    .section-divider {
+      grid-column: 1 / -1;
+      display: flex; align-items: center; gap: 1rem;
+      margin: 0.5rem 0 0.25rem;
+    }
+    .section-divider h3 {
+      font-family: var(--font-mono);
+      font-size: 0.68rem; font-weight: 500;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--text-muted); white-space: nowrap;
+    }
+    .section-divider hr {
+      flex: 1; border: none;
+      border-top: 1px solid var(--border);
+    }
+    .monthly-header {
+      grid-column: 1 / -1;
+      display: flex; align-items: center;
+      justify-content: space-between; flex-wrap: wrap; gap: 0.75rem;
+      margin-bottom: 0.25rem;
+    }
+    .budget-table { width: 100%; border-collapse: collapse; }
+    .budget-table th {
+      font-family: var(--font-mono); font-size: 0.62rem;
+      text-transform: uppercase; letter-spacing: 0.07em;
+      color: var(--text-light); padding: 0.55rem 1rem;
+      text-align: left; background: var(--surface-2);
+      border-bottom: 1px solid var(--border);
+    }
+    .budget-table th.right { text-align: right; }
+    .budget-table td {
+      padding: 0.45rem 1rem; font-size: 0.83rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    .budget-table tr:last-child td { border-bottom: none; }
+    .budget-table tr:hover td { background: var(--surface-2); }
+    .budget-input {
+      width: 120px; text-align: right;
+      font-family: var(--font-mono); font-size: 0.82rem;
+      background: var(--bg); border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm); padding: 0.25rem 0.5rem;
+      min-height: 32px;
+    }
+    .budget-input:focus { outline: none; border-color: var(--text); }
+    .carry-btn {
+      display: inline-flex; align-items: center; gap: 0.35rem;
+      background: var(--surface); border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm); padding: 0.4rem 0.85rem;
+      font-size: 0.78rem; font-family: var(--font-sans); font-weight: 500;
+      color: var(--text-muted); cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .carry-btn:hover { border-color: var(--text); color: var(--text); }
+    .save-budget-btn { margin: 0.75rem 1rem; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a class="nav-brand" href="/dashboard">RT</a>
+    <div class="nav-links">
+      <a href="/dashboard">Dashboard</a>
+      <a href="/entry">Add</a>
+      <a href="/log">Log</a>
+      <a href="/summary">Summary</a>
+      <a href="/settings">Settings</a>
+    </div>
+  </nav>
+
+  <main class="page">
+    <div class="page-header">
+      <span class="page-title">Settings</span>
+    </div>
+
+    <div class="settings-grid">
+
+      <!-- Accounts (full width — has more columns) -->
+      <div class="ref-card full-width" id="accounts-card">
+        <div class="ref-card-header">
+          <h2>Accounts</h2>
+          <span style="font-size:0.72rem;color:var(--text-muted)">
+            liquid · financial · credit
+          </span>
+        </div>
+        <ul class="ref-list" id="accounts-list">
+          <li><div class="spinner" style="margin:1rem auto"></div></li>
+        </ul>
+        <div class="add-row" id="accounts-add">
+          <input type="text"   id="acc-name"  placeholder="Account name" required>
+          <select id="acc-type">
+            <option value="liquid">Liquid</option>
+            <option value="financial">Financial</option>
+            <option value="credit">Credit</option>
+          </select>
+          <input type="number" id="acc-order" placeholder="Order" min="1" value="99">
+          <button class="btn btn-primary" style="width:auto" id="acc-add-btn">Add Account</button>
+        </div>
+      </div>
+
+      <!-- Expense Categories -->
+      <div class="ref-card" id="categories-card">
+        <div class="ref-card-header">
+          <h2>Expense Categories</h2>
+        </div>
+        <ul class="ref-list" id="categories-list">
+          <li><div class="spinner" style="margin:1rem auto"></div></li>
+        </ul>
+        <div class="add-row" id="categories-add">
+          <input type="text"   id="cat-name"  placeholder="Category name" required>
+          <input type="number" id="cat-order" placeholder="Order" min="1" value="99">
+          <button class="btn btn-primary" style="width:auto" id="cat-add-btn">Add</button>
+        </div>
+      </div>
+
+      <!-- Income Sources -->
+      <div class="ref-card" id="sources-card">
+        <div class="ref-card-header">
+          <h2>Income Sources</h2>
+        </div>
+        <ul class="ref-list" id="sources-list">
+          <li><div class="spinner" style="margin:1rem auto"></div></li>
+        </ul>
+        <div class="add-row" id="sources-add">
+          <input type="text"   id="src-name"  placeholder="Source name" required>
+          <input type="number" id="src-order" placeholder="Order" min="1" value="99">
+          <button class="btn btn-primary" style="width:auto" id="src-add-btn">Add</button>
+        </div>
+      </div>
+
+
+      <!-- Section divider -->
+      <div class="section-divider full-width">
+        <h3>Monthly Budget &amp; Rollovers</h3>
+        <hr>
+      </div>
+
+      <!-- Month picker for budget/rollover -->
+      <div class="monthly-header">
+        <div id="budget-month-selector"></div>
+        <button class="carry-btn" id="carry-forward-btn">
+          &#8593; Carry forward from previous month
+        </button>
+      </div>
+
+      <!-- Expense Budget -->
+      <div class="ref-card">
+        <div class="ref-card-header">
+          <h2>Expense Budget</h2>
+          <span style="font-size:0.72rem;color:var(--text-muted)">planned per category</span>
+        </div>
+        <div id="expense-budget-table"><div class="spinner" style="margin:1rem auto"></div></div>
+        <div class="save-budget-btn">
+          <button class="btn btn-primary" id="save-expense-budget">Save Expense Budget</button>
+        </div>
+      </div>
+
+      <!-- Income Budget -->
+      <div class="ref-card">
+        <div class="ref-card-header">
+          <h2>Income Budget</h2>
+          <span style="font-size:0.72rem;color:var(--text-muted)">planned per source</span>
+        </div>
+        <div id="income-budget-table"><div class="spinner" style="margin:1rem auto"></div></div>
+        <div class="save-budget-btn">
+          <button class="btn btn-primary" id="save-income-budget">Save Income Budget</button>
+        </div>
+      </div>
+
+      <!-- Account Rollovers (full width) -->
+      <div class="ref-card full-width">
+        <div class="ref-card-header">
+          <h2>Account Rollovers</h2>
+          <span style="font-size:0.72rem;color:var(--text-muted)">opening balance for selected month</span>
+        </div>
+        <div id="rollovers-table"><div class="spinner" style="margin:1rem auto"></div></div>
+        <div class="save-budget-btn">
+          <button class="btn btn-primary" id="save-rollovers">Save Rollovers</button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <div id="toast"></div>
+  <script type="module" src="/static/settings.js"></script>
+</body>
+</html>

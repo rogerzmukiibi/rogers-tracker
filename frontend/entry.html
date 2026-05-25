@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Transaction — Rogers Tracker</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <nav>
+    <a class="nav-brand" href="/">RT</a>
+    <div class="nav-links">
+      <a href="/">Dashboard</a>
+      <a href="/entry">Add</a>
+      <a href="/log">Log</a>
+      <a href="/summary">Summary</a>
+      <a href="/settings">Settings</a>
+    </div>
+  </nav>
+
+  <main class="page">
+    <div class="page-header">
+      <span class="page-title">Add Transaction</span>
+    </div>
+
+    <div class="form-card">
+      <div class="form-tabs">
+        <button class="tab-btn active" data-tab="expense">Expense</button>
+        <button class="tab-btn"        data-tab="income">Income</button>
+        <button class="tab-btn"        data-tab="transfer">Transfer</button>
+      </div>
+
+      <!-- EXPENSE FORM -->
+      <form id="expense-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="e-date">Date</label>
+            <input type="date" id="e-date" required>
+          </div>
+          <div class="form-group">
+            <label for="e-amount">Amount (UGX)</label>
+            <div class="input-prefix">
+              <span>UGX</span>
+              <input type="number" id="e-amount" class="amount-input" min="1" step="100" placeholder="0" required>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="e-desc">Description</label>
+          <input type="text" id="e-desc" placeholder="e.g. Lunch, Airtime…">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="e-category">Category</label>
+            <select id="e-category" required></select>
+          </div>
+          <div class="form-group">
+            <label for="e-account">Account</label>
+            <select id="e-account" required></select>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Save Expense</button>
+      </form>
+
+      <!-- INCOME FORM -->
+      <form id="income-form" hidden>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="i-date">Date</label>
+            <input type="date" id="i-date" required>
+          </div>
+          <div class="form-group">
+            <label for="i-amount">Amount (UGX)</label>
+            <div class="input-prefix">
+              <span>UGX</span>
+              <input type="number" id="i-amount" class="amount-input" min="1" step="100" placeholder="0" required>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="i-desc">Description</label>
+          <input type="text" id="i-desc" placeholder="e.g. Mikka, Kevinah…">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="i-source">Source</label>
+            <select id="i-source" required></select>
+          </div>
+          <div class="form-group">
+            <label for="i-account">Account</label>
+            <select id="i-account" required></select>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Save Income</button>
+      </form>
+
+      <!-- TRANSFER FORM -->
+      <form id="transfer-form" hidden>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="t-date">Date</label>
+            <input type="date" id="t-date" required>
+          </div>
+          <div class="form-group">
+            <label for="t-amount">Amount (UGX)</label>
+            <div class="input-prefix">
+              <span>UGX</span>
+              <input type="number" id="t-amount" class="amount-input" min="1" step="100" placeholder="0" required>
+            </div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="t-from">From Account</label>
+            <select id="t-from" required></select>
+          </div>
+          <div class="form-group">
+            <label for="t-to">To Account</label>
+            <select id="t-to" required></select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="t-fees">Fees (UGX)</label>
+            <div class="input-prefix">
+              <span>UGX</span>
+              <input type="number" id="t-fees" class="amount-input" min="0" step="50" placeholder="0">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="t-desc">Description</label>
+            <input type="text" id="t-desc" placeholder="e.g. Withdraw, Deposit…">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Save Transfer</button>
+      </form>
+    </div>
+  </main>
+
+  <div id="toast"></div>
+  <script type="module" src="/static/entry.js"></script>
+</body>
+</html>
