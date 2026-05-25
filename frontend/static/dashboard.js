@@ -1,5 +1,5 @@
 import {
-  api, formatUGX, initMonthSelector, setActiveNav, ready, toast, spinner, empty
+  api, formatUGX, initMonthSelector, setActiveNav, ready, toast, spinner, empty, setYM
 } from './app.js';
 
 const CHART_COLORS = [
@@ -14,6 +14,8 @@ let incomeChart  = null;
 
 ready(async () => {
   setActiveNav();
+  const now = new Date();
+  setYM(now.getFullYear(), now.getMonth() + 1);
   const ms = initMonthSelector('month-selector', (y, m) => loadDashboard(y, m));
   await loadDashboard(ms.getYear(), ms.getMonth());
 });

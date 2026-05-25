@@ -46,6 +46,12 @@ app.mount(
     name="static",
 )
 
+app.mount(
+    "/assets",
+    StaticFiles(directory=str(settings.frontend_dir / "assets")),
+    name="assets",
+)
+
 
 # ---------------------------------------------------------------------------
 # Page routes

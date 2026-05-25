@@ -122,7 +122,9 @@ export function setActiveNav() {
   const path = location.pathname.replace(/\/$/, '') || '/';
   document.querySelectorAll('.nav-links a').forEach(a => {
     const href = a.getAttribute('href').replace(/\/$/, '') || '/';
-    a.classList.toggle('active', href === path);
+    const isActive = href === path;
+    a.classList.toggle('active', isActive);
+    a.classList.toggle('nav-button', isActive);
   });
 }
 
