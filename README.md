@@ -162,7 +162,7 @@ where:
 To run without Docker (for development):
 ```bash
 pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8000
+python -m uvicorn app.main:app --reload --port 8000
 ```
 
 The app auto-creates `data/tracker.db` and seeds it with accounts, categories, and income sources on first run.

@@ -79,6 +79,12 @@ nav {
 }
 .nav-links a:hover { color: #fff; background: rgba(255,255,255,0.08); }
 .nav-links a.active { color: #fff; background: rgba(255,255,255,0.15); }
+.nav-links a.nav-button {
+  color: #fff;
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.16);
+}
+.nav-links a.nav-button:hover { background: rgba(255,255,255,0.18); }
 
 /* ── Layout ──────────────────────────────────────── */
 .page { max-width: 1080px; margin: 0 auto; padding: 1.5rem 1.25rem 3rem; }
@@ -473,6 +479,8 @@ input:focus, select:focus, textarea:focus {
   .charts-row { grid-template-columns: 1fr; }
   .form-row   { grid-template-columns: 1fr; }
   .summary-cards { grid-template-columns: 1fr 1fr; }
+  nav { overflow-x: auto; }
+  .nav-links { flex-wrap: nowrap; }
   .nav-links a { padding: 0.4rem 0.5rem; font-size: 0.75rem; }
   .page { padding: 1rem 0.9rem 3rem; }
   .amount-input { font-size: 1.1rem !important; }
