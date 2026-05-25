@@ -49,21 +49,27 @@ rogers-tracker/
 ├── data/                        ← SQLite DB lives here (synced by Syncthing)
 │   └── tracker.db               ← auto-created on first run
 ├── app/
-│   ├── main.py                  ← FastAPI app, all routes
+│   ├── __init__.py
+│   ├── config.py
 │   ├── database.py              ← SQLite connection, schema creation, seed data
-│   ├── models.py                ← Pydantic request/response models
-│   └── logic.py                 ← Business logic (balance calc, summaries)
+│   ├── logic.py                 ← Business logic (balance calc, summaries)
+│   ├── main.py                  ← FastAPI app, all routes
+│   └── models.py                ← Pydantic request/response models
 └── frontend/
-    ├── index.html               ← Dashboard (charts, monthly overview)
-    ├── entry.html               ← Transaction entry (expense / income / transfer)
-    ├── log.html                 ← Transaction log with filters
-    ├── summary.html             ← Year-to-date summary table
-    └── static/
-        ├── app.js               ← Shared JS (API calls, navigation, formatting)
-        ├── dashboard.js         ← Dashboard-specific chart logic
-        ├── entry.js             ← Entry form logic
-        ├── log.js               ← Log filter/render logic
-        └── style.css            ← All styles
+  ├── index.html               ← Dashboard (charts, monthly overview)
+  ├── dashboard.html           ← Alternate dashboard page
+  ├── entry.html               ← Transaction entry (expense / income / transfer)
+  ├── log.html                 ← Transaction log with filters
+  ├── settings.html            ← App settings page
+  ├── summary.html             ← Year-to-date summary table
+  └── static/
+    ├── app.js               ← Shared JS (API calls, navigation, formatting)
+    ├── dashboard.js         ← Dashboard-specific chart logic
+    ├── entry.js             ← Entry form logic
+    ├── log.js               ← Log filter/render logic
+    ├── settings.js         ← Settings page logic
+    ├── summary.js          ← Summary page logic
+    └── style.css            ← All styles
 ```
 
 ---
