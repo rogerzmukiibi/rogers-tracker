@@ -2,7 +2,7 @@ from contextlib import asynccontextmanager
 from typing import Optional
 
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import FileResponse, RedirectResponse
+from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
 from .config import settings
@@ -63,7 +63,7 @@ def _page(filename: str) -> FileResponse:
 
 @app.get("/", include_in_schema=False)
 def root():
-    return RedirectResponse(url="/dashboard")
+    return _page("index.html")
 
 
 @app.get("/dashboard", include_in_schema=False)
