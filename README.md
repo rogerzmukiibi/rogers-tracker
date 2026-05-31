@@ -34,6 +34,17 @@ docker compose up
 
 Open `http://localhost:8000` in your browser.
 
+### Windows quick start
+If you want to run the app without Docker on Windows, open a terminal in the project folder once and run:
+
+```bash
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+After that, double-click `start.bat` to launch the app. It will open `http://localhost:8000` automatically. Use `stop.bat` if you want to stop any running Python server process.
+
 ### Access from phone (same Wi-Fi)
 Find your PC's local IP address (e.g. `192.168.1.x`) and open `http://192.168.1.x:8000` on your phone browser.
 
@@ -166,6 +177,12 @@ python -m uvicorn app.main:app --reload --port 8000
 ```
 
 The app auto-creates `data/tracker.db` and seeds it with accounts, categories, and income sources on first run.
+
+On Windows, the local workflow is:
+
+1. Double-click `start.bat` to start the server.
+2. Open `http://localhost:8000` in your browser.
+3. Close the terminal window or run `stop.bat` to stop it.
 
 ---
 
