@@ -15,9 +15,11 @@ export function formatUGXShort(amount) {
   return amount < 0 ? `-UGX ${str}` : `UGX ${str}`;
 }
 
+export const API_BASE = '/api';
+
 // ── API helper ────────────────────────────────────────────────────
 export async function api(path, options = {}) {
-  const res = await fetch('/api' + path, {
+  const res = await fetch(API_BASE + path, {
     headers: { 'Content-Type': 'application/json' },
     ...options,
   });

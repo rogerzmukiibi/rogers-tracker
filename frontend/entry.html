@@ -7,7 +7,7 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon/favicon-16x16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png">
-  <link rel="manifest" href="/assets/favicon/site.webmanifest">
+  <link rel="manifest" href="/manifest.json">
   <title>Add Transaction — Rogers Tracker</title>
   <link rel="stylesheet" href="/static/style.css">
 </head>
@@ -26,6 +26,10 @@
   <main class="page">
     <div class="page-header">
       <span class="page-title">Add Transaction</span>
+    </div>
+
+    <div id="offline-banner" hidden style="display:none;margin:0 0 1rem;padding:0.75rem 1rem;border:1px solid var(--border);border-radius:var(--radius-md);background:var(--surface);color:var(--text-muted);font-size:0.85rem">
+      Saved offline — will sync when back online
     </div>
 
     <div class="form-card">
@@ -143,6 +147,17 @@
   </main>
 
   <div id="toast"></div>
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/sw.js");
+      navigator.serviceWorker.addEventListener("message", (event) => {
+        if (event.data?.type === "OFFLINE_QUEUED") {
+          const banner = document.getElementById("offline-banner");
+          if (banner) banner.style.display = "block";
+        }
+      });
+    }
+  </script>
   <script type="module" src="/static/entry.js"></script>
 </body>
 </html>

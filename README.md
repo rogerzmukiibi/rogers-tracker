@@ -1,8 +1,8 @@
 # Rogers Tracker
 
-A personal finance tracker built as a self-hosted web app. Runs in Docker, accessible in any browser on PC and phone, data synced across devices via Syncthing.
+A personal finance tracker built as a Cloudflare Pages app with Pages Functions and D1.
 
-Designed as a direct replacement for the Rogers Tracker Excel workbook — same categories, accounts, income sources, and logic — but with a proper UI, charts, and fast mobile data entry.
+It is designed as a direct replacement for the Rogers Tracker Excel workbook — same categories, accounts, income sources, and logic — but with a proper UI, charts, and fast mobile data entry.
 
 ---
 
@@ -10,43 +10,58 @@ Designed as a direct replacement for the Rogers Tracker Excel workbook — same 
 
 | Layer | Technology |
 |---|---|
-| Backend | Python 3.12 + FastAPI |
-| Database | SQLite (single file: `data/tracker.db`) |
+| Backend | Cloudflare Pages Functions |
+| Database | Cloudflare D1 |
 | Frontend | Plain HTML + Vanilla JS + Chart.js |
-| Container | Docker + Docker Compose |
-| Sync | Syncthing (syncs the `data/` folder) |
+| Hosting | Cloudflare Pages |
+| PWA | Service worker + manifest |
 
-No build step. No Node. No compiled frontend. The frontend is static files served directly by FastAPI.
+No frontend framework. No build step. The site is served directly by Cloudflare Pages.
 
 ---
 
 ## Quick Start
 
 ### Prerequisites
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed and running
+- A Cloudflare account
+- Node.js installed locally for Wrangler
 
-### Run
+### Install
 ```bash
 git clone <repo>
 cd rogers-tracker
-docker compose up
+npm install
 ```
 
-Open `http://localhost:8000` in your browser.
+### Local dev
+```bash
+npm run dev
+```
 
-### Windows quick start
-If you want to run the app without Docker on Windows, open a terminal in the project folder once and run:
+This starts Cloudflare Pages locally with a D1 binding.
+
+### Deploy
+```bash
+npm run deploy
+```
+
+Before the first deploy, create the D1 database and apply the schema:
 
 ```bash
-python -m venv .venv
-.venv\Scripts\activate
-pip install -r requirements.txt
+npx wrangler d1 create rogers-tracker-db
+npx wrangler d1 execute rogers-tracker-db --remote --file=./schema.sql
 ```
 
-After that, double-click `start.bat` to launch the app. It will open `http://localhost:8000` automatically. Use `stop.bat` if you want to stop any running Python server process.
+Then copy the returned D1 `database_id` into [wrangler.toml](wrangler.toml).
 
-### Access from phone (same Wi-Fi)
-Find your PC's local IP address (e.g. `192.168.1.x`) and open `http://192.168.1.x:8000` on your phone browser.
+### Custom domain
+If your domain is already on Cloudflare, add the Pages custom domain in the Cloudflare dashboard:
+
+1. Open **Cloudflare Dashboard → Pages → rogers-tracker**
+2. Open **Custom domains**
+3. Add `tracker.mukiibi.me`
+
+Cloudflare creates the DNS record automatically.
 
 ---
 
@@ -54,47 +69,29 @@ Find your PC's local IP address (e.g. `192.168.1.x`) and open `http://192.168.1.
 
 ```
 rogers-tracker/
-├── docker-compose.yml
-├── Dockerfile
-├── requirements.txt
-├── data/                        ← SQLite DB lives here (synced by Syncthing)
-│   └── tracker.db               ← auto-created on first run
-├── app/
-│   ├── __init__.py
-│   ├── config.py
-│   ├── database.py              ← SQLite connection, schema creation, seed data
-│   ├── logic.py                 ← Business logic (balance calc, summaries)
-│   ├── main.py                  ← FastAPI app, all routes
-│   └── models.py                ← Pydantic request/response models
+├── wrangler.toml                ← Cloudflare Pages + D1 config
+├── package.json                 ← Wrangler scripts
+├── schema.sql                   ← D1 schema + seed data
+├── functions/
+│   └── api/                     ← Pages Functions API layer
 └── frontend/
-  ├── index.html               ← Dashboard (charts, monthly overview)
-  ├── dashboard.html           ← Alternate dashboard page
-  ├── entry.html               ← Transaction entry (expense / income / transfer)
-  ├── log.html                 ← Transaction log with filters
-  ├── settings.html            ← App settings page
-  ├── summary.html             ← Year-to-date summary table
+  ├── index.html               ← redirect to dashboard
+  ├── dashboard.html           ← dashboard page
+  ├── entry.html               ← transaction entry page
+  ├── log.html                 ← transaction log page
+  ├── settings.html            ← settings page
+  ├── summary.html             ← year summary page
+  ├── manifest.json            ← PWA manifest
+  ├── sw.js                    ← service worker
   └── static/
-    ├── app.js               ← Shared JS (API calls, navigation, formatting)
-    ├── dashboard.js         ← Dashboard-specific chart logic
-    ├── entry.js             ← Entry form logic
-    ├── log.js               ← Log filter/render logic
-    ├── settings.js         ← Settings page logic
-    ├── summary.js          ← Summary page logic
-    └── style.css            ← All styles
+    ├── app.js                 ← shared JS helpers
+    ├── dashboard.js
+    ├── entry.js
+    ├── log.js
+    ├── settings.js
+    ├── summary.js
+    └── style.css
 ```
-
----
-
-## Syncthing Setup
-
-Syncthing syncs the `data/` folder (which contains `tracker.db`) across devices.
-
-1. Install [Syncthing](https://syncthing.net/) on PC and phone
-2. Add the `rogers-tracker/data/` folder as a shared folder in Syncthing
-3. Pair your devices
-4. Syncthing will keep `tracker.db` in sync automatically
-
-> The Docker container runs on your PC only. Your phone connects to it as a browser client over your local network. Syncthing ensures the database is available if you ever run the app on a different machine.
 
 ---
 
@@ -168,24 +165,9 @@ where:
 
 ---
 
-## Development
+## Notes
 
-To run without Docker (for development):
-```bash
-pip install -r requirements.txt
-python -m uvicorn app.main:app --reload --port 8000
-```
-
-The app auto-creates `data/tracker.db` and seeds it with accounts, categories, and income sources on first run.
-
-On Windows, the local workflow is:
-
-1. Double-click `start.bat` to start the server.
-2. Open `http://localhost:8000` in your browser.
-3. Close the terminal window or run `stop.bat` to stop it.
-
----
-
-## Importing from Excel
-
-A future import script (`scripts/import_excel.py`) will parse the Rogers Tracker Excel workbook and load historical transactions into the database. Not yet implemented.
+- All amounts are stored as integer UGX values.
+- The `Fees` category is computed from transfer fees and is not entered directly.
+- The `Credit` account is treated as debt and can show negative balances.
+- The app is installable as a PWA once deployed on the custom domain.

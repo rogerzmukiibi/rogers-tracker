@@ -7,7 +7,7 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon/favicon-16x16.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png">
-  <link rel="manifest" href="/assets/favicon/site.webmanifest">
+  <link rel="manifest" href="/manifest.json">
   <title>Dashboard — Rogers Tracker</title>
   <link rel="stylesheet" href="/static/style.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
@@ -52,6 +52,17 @@
   </main>
 
   <div id="toast"></div>
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/sw.js");
+      navigator.serviceWorker.addEventListener("message", (event) => {
+        if (event.data?.type === "OFFLINE_QUEUED") {
+          const banner = document.getElementById("offline-banner");
+          if (banner) banner.style.display = "block";
+        }
+      });
+    }
+  </script>
   <script type="module" src="/static/dashboard.js"></script>
 </body>
 </html>

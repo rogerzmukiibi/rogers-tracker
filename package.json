@@ -1,0 +1,13 @@
+{
+  "name": "rogers-tracker",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler pages dev frontend --d1=DB",
+    "deploy": "wrangler pages deploy frontend"
+  },
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  }
+}
